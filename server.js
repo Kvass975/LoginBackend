@@ -20,12 +20,6 @@ const db = mysql.createConnection({
     database: 'sql11463787'
 })
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://loginfrontend-rg.netlify.app/register/register.html");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
-
 function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
