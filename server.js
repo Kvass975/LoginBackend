@@ -20,6 +20,14 @@ const db = mysql.createConnection({
     database: 'sql11463787'
 })
 
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
 function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
@@ -119,6 +127,7 @@ app.post('/register', async function(req, res) {
 app.post("/login", async function(req, res) {
     try{
         const {email, password} = req.body
+        if(!email||!password) throw new Error("Email or passord empty")
         let sql = `SELECT id, email FROM emails WHERE email='${email}'`
         db.query(sql, (err, result)=>{
             if (err) throw err;
@@ -147,7 +156,9 @@ app.post("/login", async function(req, res) {
             })}
         })
     }catch(e){
-        res.send("Something went wrong")
+        res.status(400).json({
+            "message": e.message
+        })
     }
 })
 
